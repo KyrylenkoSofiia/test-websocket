@@ -11,6 +11,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+.env
+./kyrylenko.sofiia@gmail.com-key.pem
+./kyrylenko.sofiia@gmail.com.pem
 # OS
 .DS_Store
 

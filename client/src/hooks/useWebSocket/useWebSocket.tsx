@@ -1,17 +1,14 @@
 import {useEffect, useState} from "react";
 import {io, Socket} from "socket.io-client";
-import {messageType} from "../types/generalTypes";
+import {toast} from "react-toastify";
+import {WebSocketHookReturnType} from "./useWebSocket.type";
 
-type WebSocketHookReturnType = {
-  socket: Socket | null;
-  isConnected: boolean;
-  messages: messageType[];
-};
-
-const useWebSocket = (url: string): WebSocketHookReturnType => {
+const useWebSocket = (
+  url: string,
+  eventOnConnect?: string,
+): WebSocketHookReturnType => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<messageType[]>([]);
   useEffect(() => {
     const connectionOptions = {
       secure: true,
@@ -21,22 +18,20 @@ const useWebSocket = (url: string): WebSocketHookReturnType => {
     const newSocket = io(url, connectionOptions);
 
     newSocket.on("connect", () => {
-      console.log(`WebSocket connected `);
+      toast.success("WebSocket connected");
       setIsConnected(true);
-      newSocket.emit("retrieveAllMessages");
-    });
-
-    newSocket.on("retrieveAllMessages", response => {
-      setMessages([...response]);
+      if (eventOnConnect) {
+        newSocket.emit(eventOnConnect);
+      }
     });
 
     newSocket.on("disconnect", () => {
-      console.log("WebSocket disconnected");
+      toast.error("WebSocket disconnected");
       setIsConnected(false);
     });
 
     newSocket.on("close", (error: Error) => {
-      console.error("WebSocket error:", error);
+      toast.error(`WebSocket error: ${error}`);
       setIsConnected(false);
     });
 
@@ -47,7 +42,7 @@ const useWebSocket = (url: string): WebSocketHookReturnType => {
     };
   }, [url]);
 
-  return {socket, isConnected, messages};
+  return {socket, isConnected};
 };
 
 export default useWebSocket;

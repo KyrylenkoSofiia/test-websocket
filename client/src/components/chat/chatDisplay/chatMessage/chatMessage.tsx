@@ -1,8 +1,8 @@
-import React, {FC} from "react";
+import React, {FC, memo} from "react";
 import {chatMessageProps} from "./chatMessage.type";
 
-const ChatMessage: FC<chatMessageProps> = ({message, owner}) => {
-  const {text} = message;
+const ChatMessage: FC<chatMessageProps> = ({message}) => {
+  const {text, owner} = message;
   return (
     <div className={`mb-4 flex ${owner ? "justify-end" : "justify-start"}`}>
       <div
@@ -15,4 +15,9 @@ const ChatMessage: FC<chatMessageProps> = ({message, owner}) => {
   );
 };
 
-export default ChatMessage;
+export default memo(ChatMessage, (prevProps, nextProps) => {
+  return (
+    prevProps.message.text === nextProps.message.text &&
+    prevProps.message.owner === nextProps.message.owner
+  );
+});

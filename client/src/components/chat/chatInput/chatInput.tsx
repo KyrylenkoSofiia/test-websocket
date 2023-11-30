@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, FormEvent, useCallback, useState} from "react";
 import InputField from "../../general/inputField/inputField";
 import Button from "../../general/button/button";
 import {buttonType} from "../../general/button/button.type";
@@ -11,13 +11,15 @@ const ChatInput: FC<chatInputProps> = ({disabled, sendMessage}) => {
     sendMessage(inputValue);
     setInputValue("");
   };
-  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+
+  const handleChange = useCallback((e: FormEvent<HTMLInputElement>) => {
     setInputValue(e.currentTarget.value);
-  };
+  }, []);
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center justify-between p-4 h-full">
+      className="flex items-center justify-between p-4 h-full flex-[10%]">
       <InputField
         disabled={disabled}
         type={"text"}

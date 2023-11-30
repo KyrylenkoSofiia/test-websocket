@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { ChatMessages } from 'src/events/types/events';
+import { compareHash } from 'src/utils/utils';
 
 @Injectable()
 export class MessageService {
   private chatMessages: ChatMessages[] = [];
-  async createMessage(text: string, userHash: string) {
-    return this.chatMessages.push({ text, userHash });
+  createMessage(text: string, userHash: string) {
+    const newMessage = { text, userHash };
+    this.chatMessages.push(newMessage);
+    return newMessage;
   }
   retrieveAllMessages(userHash: string) {
     const messages = this.chatMessages.map((chat) => {
-      if (chat.userHash === userHash) {
-        return { ...chat, owner: true };
-      } else {
-        return { ...chat, owner: true };
-      }
+      const owner = compareHash(chat.userHash, userHash);
+      return { ...chat, owner };
     });
     return messages;
   }

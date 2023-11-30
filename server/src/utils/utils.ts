@@ -1,27 +1,12 @@
 import * as crypto from 'crypto';
 
-const secretKey = process.env.SECRET;
-
-export function generateTokenFromIPAndUserAgent(
-  ip: string,
-  userAgent: string,
-): string {
-  const combinedData = `${ip}-${userAgent}`;
-  const hash = crypto
-    .createHmac('sha256', secretKey)
-    .update(combinedData)
-    .digest('hex');
-
-  const cipher = crypto.createCipher('aes-256-ctr', secretKey);
-  let encryptedToken = cipher.update(hash, 'utf-8', 'hex');
-  encryptedToken += cipher.final('hex');
-
-  return encryptedToken;
+export function hashUser(ip: string, userAgent: string): string {
+  const secretKey = process.env.SECRET_KEY;
+  const hash = crypto.createHash('sha256');
+  hash.update(`${ip}-${userAgent}-${secretKey}`);
+  return hash.digest('hex');
 }
 
-export function compareTokens(tokenA: string, tokenB: string): boolean {
-  return crypto.timingSafeEqual(
-    Buffer.from(tokenA, 'hex'),
-    Buffer.from(tokenB, 'hex'),
-  );
+export function compareHash(hash1: string, hash2: string): boolean {
+  return hash1 === hash2;
 }

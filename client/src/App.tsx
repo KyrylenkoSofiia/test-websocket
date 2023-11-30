@@ -1,29 +1,44 @@
-import React from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import "./index.css";
 import ChatInput from "./components/chat/chatInput/chatInput";
 import ChatDisplay from "./components/chat/chatDisplay/chatDisplay";
-import useWebSocket from "./hooks/useWebSocket";
-
-// const mockMessages: messageType[] = [
-//   {text: "Hello!", _id: "1", owner: false},
-//   {text: "How are you?", _id: "2", owner: true},
-//   {text: "What about you?", _id: "4", owner: false},
-//   {text: "Just working on this chat app.", _id: "5", owner: true},
-//   {text: "That sounds cool!", _id: "6", owner: false},
-//   {text: "Hello!", _id: "7", owner: false},
-//   {text: "How are you?", _id: "8", owner: true},
-//   {text: "What about you?", _id: "9", owner: false},
-//   {text: "Just working on this chat app.", _id: "10", owner: true},
-//   {text: "That sounds cool!", _id: "11", owner: false},
-//   {text: "Hello!", _id: "12", owner: false},
-//   {text: "How are you?", _id: "13", owner: true},
-//   {text: "What about you?", _id: "14", owner: false},
-//   {text: "Just working on this chat app.", _id: "15", owner: true},
-//   {text: "That sounds cool!", _id: "16", owner: false},
-// ];
+import useWebSocket from "./hooks/useWebSocket/useWebSocket";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {messageType} from "./types/generalTypes";
 
 function App() {
-  const {isConnected, socket, messages} = useWebSocket("ws://localhost:3000");
+  const {isConnected, socket} = useWebSocket(
+    "ws://localhost:3000",
+    "retrieveAllMessages",
+  );
+  const [messages, setMessages] = useState<messageType[]>([]);
+
+  const addMessage = useCallback(
+    (message: messageType) => {
+      setMessages(prev => [...prev, message]);
+    },
+    [setMessages],
+  );
+
+  const setAllMessages = useCallback(
+    (messages: messageType[]) => {
+      setMessages(messages);
+    },
+    [setMessages],
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("retrieveAllMessages", (messages: messageType[]) => {
+        setAllMessages(messages);
+      });
+
+      socket.on("newMessage", (message: messageType) => {
+        addMessage(message);
+      });
+    }
+  }, [socket]);
 
   const sendMessage = (message: string) => {
     socket?.emit("createMessage", message);
@@ -31,6 +46,7 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col">
+      <ToastContainer />
       <ChatDisplay messages={messages} />
       <ChatInput disabled={!isConnected} sendMessage={sendMessage} />
     </div>
