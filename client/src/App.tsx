@@ -45,7 +45,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col ">
       <ToastContainer />
       <ChatDisplay messages={messages} />
       <ChatInput disabled={!isConnected} sendMessage={sendMessage} />

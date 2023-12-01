@@ -4,9 +4,9 @@ export enum buttonType {
   reset = "reset",
 }
 export type buttonProps = {
-  text: string;
+  buttonContent: string | JSX.Element;
   type: buttonType;
   disabled: boolean;
   onClick?: () => void;
-  additionalStyle?: string;
+  additionalClass?: string;
 };

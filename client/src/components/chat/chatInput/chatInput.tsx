@@ -3,6 +3,7 @@ import InputField from "../../general/inputField/inputField";
 import Button from "../../general/button/button";
 import {buttonType} from "../../general/button/button.type";
 import {chatInputProps} from "./chatInput.type";
+import {arrowIcon} from "../../../assets/arrow-icon";
 
 const ChatInput: FC<chatInputProps> = ({disabled, sendMessage}) => {
   const [inputValue, setInputValue] = useState("");
@@ -12,23 +13,28 @@ const ChatInput: FC<chatInputProps> = ({disabled, sendMessage}) => {
     setInputValue("");
   };
 
-  const handleChange = useCallback((e: FormEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: FormEvent<HTMLTextAreaElement>) => {
     setInputValue(e.currentTarget.value);
   }, []);
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center justify-between p-4 h-full flex-[10%]">
+      className="flex justify-between p-4 h-full flex-[10%] items-center gap-4 ">
       <InputField
         disabled={disabled}
-        type={"text"}
         name={"message"}
         placeholder={"please enter your message"}
         value={inputValue}
         onChange={handleChange}
+        additionalClass="flex-[90%]"
       />
-      <Button text={"Send"} type={buttonType.submit} disabled={disabled} />
+      <Button
+        buttonContent={arrowIcon}
+        type={buttonType.submit}
+        disabled={disabled}
+        additionalClass="flex-[10%]"
+      />
     </form>
   );
 };

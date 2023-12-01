@@ -1,16 +1,5 @@
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import helmet from 'helmet';
-import * as fs from 'fs';
-import * as path from 'path';
-
-export const sslOptions = {
-  key: fs.readFileSync(
-    path.resolve(__dirname, './../kyrylenko.sofiia@gmail.com-key.pem'),
-  ),
-  cert: fs.readFileSync(
-    path.resolve(__dirname, './../kyrylenko.sofiia@gmail.com.pem'),
-  ),
-};
 
 export const helmetConfig = helmet({
   contentSecurityPolicy: {

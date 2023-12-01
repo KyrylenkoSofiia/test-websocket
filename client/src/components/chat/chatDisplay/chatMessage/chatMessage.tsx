@@ -6,7 +6,7 @@ const ChatMessage: FC<chatMessageProps> = ({message}) => {
   return (
     <div className={`mb-4 flex ${owner ? "justify-end" : "justify-start"}`}>
       <div
-        className={`rounded-lg p-4 max-w-[70%] ${
+        className={`rounded-lg p-4 max-w-[70%]  break-all ${
           owner ? "bg-blue-500 text-white" : "bg-gray-200"
         }`}>
         {text}
